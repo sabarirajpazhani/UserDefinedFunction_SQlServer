@@ -75,3 +75,20 @@ begin
 end
 
 Select FirstName, dbo.GetAge(DateOfBirth) as Age from Employee;
+
+
+
+--Inline table valued Function
+-- view the particular employee details using inline table valued function
+
+create function dbo.GetEmployeeDetails(
+	@EmpID int
+)
+returns table
+as
+return(
+	select * from Employee
+	where EmpID = @EmpID
+);
+
+select * from dbo.GetEmployeeDetails(1) ;
