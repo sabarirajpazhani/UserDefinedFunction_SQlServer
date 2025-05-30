@@ -56,3 +56,22 @@ END;
 
 select * from Employee;
 
+---Example of Scalar Funciton
+create function dbo.GetAge(
+	@DateOfBirth date
+)
+returns int
+as 
+begin
+	declare @Age int;
+	set @Age = Datediff(year, @DateOfBirth,GETDATE());
+	if(month(@DateOfBirth) > month(getdate())) or (month(@DateOfBirth) = month(getdate()) and day(@DateOfBirth) > day(getdate()))
+	begin
+		set @Age = @Age -1;
+	end
+
+	return @Age;
+
+end
+
+Select FirstName, dbo.GetAge(DateOfBirth) as Age from Employee;
