@@ -92,3 +92,49 @@ return(
 );
 
 select * from dbo.GetEmployeeDetails(1) ;
+
+
+
+---Multi statement table valued functions
+--- get all the employees where salary is greater than 50000
+alter table Employee
+add Salary decimal (10,2);
+
+--Add the data to the salary column
+update Employee
+set
+Salary = case
+	when EmpID = 1 then 45000
+	when EmpID = 2 then 55000
+	when EmpID = 3 then 52000
+	when EmpID = 4 then 54000
+	else Salary
+end;
+
+select * from Employee;
+
+CREATE FUNCTION dbo.GetEmployeeBySalary (
+    @MaxSalary DECIMAL
+)
+RETURNS @MaxSalaryTable TABLE (
+    EmpID INT,
+    FullName VARCHAR(101),
+    Gender VARCHAR(30),
+    Salary INT
+)
+AS
+BEGIN
+    INSERT INTO @MaxSalaryTable
+    SELECT 
+        EmpID, 
+        dbo.GetFullName(FirstName, LastName) AS FullName, 
+        Gender, 
+        Salary
+    FROM Employee
+    WHERE Salary <= @MaxSalary;
+
+    RETURN;
+END;
+
+
+
